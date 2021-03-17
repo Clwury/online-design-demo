@@ -8,13 +8,13 @@
                         <div class="dq">
                             <div class="zq" tabindex="0" style="user-select: none;-webkit-user-drag: none;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);touch-action: manipulation;">
                                 <div class="dsg">
-                                    <div class="zbg">
+                                    <div class="zbg" @mouseover="mouseover('backPg')" @mouseout="mouseout('backPg')" @click="mouseClick('backPg')">
 
                                     </div>
                                 </div>
                             </div>
-                            <div style="position: absolute;top: 50px;left: 50px;width: 400px;height: 400px;"></div>
-                            <div class="idg gmba" :style="{ width: content[0].width + 'px', height: content[0].height + 'px', transform: `translate(${content[0].x}px, ${content[0].y}px) rotate(${content[0].rotate}deg)` }">
+                            <!-- <div style="position: absolute;top: 50px;left: 50px;width: 400px;height: 400px;"></div> -->
+                            <div class="idg gmba" :style="{ width: content[0].width + 'px', height: content[0].height + 'px', transform: `translate(${content[0].x}px, ${content[0].y}px) rotate(${content[0].rotate}deg)`, cursor: mousePressed ? 'move' : '' }" @mouseover="mouseover('content0')" @mouseout="mouseout('content0')" @click="mouseClick('content0')" @mousedown="mousedown($event, 'content0')">
                                 <div class="hsa">
                                     <div class="dsg">
                                         <div class="jp">
@@ -27,14 +27,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="idg gmba" :style="{ width: content[1].width + 'px', height: content[1].height + 'px', transform: `translate(${content[1].x}px, ${content[1].y}px) rotate(${content[1].rotate}deg)` }">
+                            <div class="idg gmba" :style="{ width: content[1].width + 'px', height: content[1].height + 'px', transform: `translate(${content[1].x}px, ${content[1].y}px) rotate(${content[1].rotate}deg)` }" @mouseover="mouseover('content1')" @mouseout="mouseout('content1')"  @click="mouseClick('content1')">
                                 <div class="hsa">
                                     <div class="dsg">
                                         <div class="zbg" :style="{ backgroundColor: `${content[1].color}` }"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="idg gmba" :style="{ width: content[2].width + 'px', height: content[2].height + 'px', transform: `translate(${content[2].x}px, ${content[2].y}px) rotate(${content[2].rotate}deg)` }">
+                            <div class="idg gmba" :style="{ width: content[2].width + 'px', height: content[2].height + 'px', transform: `translate(${content[2].x}px, ${content[2].y}px) rotate(${content[2].rotate}deg)` }" @mouseover="mouseover('content2')" @mouseout="mouseout('content2')"  @click="mouseClick('content2')">
                                 <div class="gvg" :style="{ width: content[2].scaleWidth + 'px', height: content[2].scaleHeight + 'px', transform: `scaleX(${fontScale.scaleX}) scaleY(${fontScale.scaleY})` }">
                                     <div class="o8a">
                                         <div lang="zh-CN" class="iwg">
@@ -47,7 +47,7 @@
                                             </div> -->
                                             <p class="lha" :style="{ fontFamily: `'YACgEfb36U4 0', _fb_, auto`, fontSize: `${content[2].style.fontSize}px`, color: `${content[2].style.color}`, lineHeight: `${content[2].style.lineHeight}em`, letterSpacing: `${content[2].style.letterSpacing}`, textTransform: `${content[2].style.textTransform}`, listStyleType: 'none' }">
                                                 <span class="gsw">b</span>
-                                                <span class="gsw">eauty parlor</span>
+                                                <span class="gsw">eauty flower</span>
                                             </p>
                                         </div>
                                     </div>
@@ -58,8 +58,10 @@
                 </div>
             </div>
             <div class="mq">
-                <div v-if="false" class="_5Azx_w"></div>
-                <div class="eva" :style="{ '--rotation': `${focusContent.rotate}deg`, width: `${focusContent.width}px`, height: `${focusContent.height}px`, transform: `translate(${focusContent.x}px, ${focusContent.y}px) rotate(${focusContent.rotate}deg)` }">
+                <div v-if="mouseOverObj" class="_5Azx_w">
+                    <div class="xY4chA" :style="{ height: `${mouseOverObj.height}px`, width: `${mouseOverObj.width}px`, transform: `translate(${mouseOverObj.x}px, ${mouseOverObj.y}px) rotate(${mouseOverObj.rotate}deg)` }"></div>
+                </div>
+                <div v-if="mouseClickObj" class="eva" :style="{ '--rotation': `${mouseClickObj.rotate}deg`, width: `${mouseClickObj.width}px`, height: `${mouseClickObj.height}px`, transform: `translate(${mouseClickObj.x}px, ${mouseClickObj.y}px) rotate(${mouseClickObj.rotate}deg)` }">
                     <div class="uoq"></div>
                     <div class="cyq" tabindex="-1">
                         <div class="zeq" :style="{ '--outward-x': `${outwardX}px`, '--outward-y': `${outwardY}px` }">
@@ -104,7 +106,9 @@ export default {
                 rotate: 0,
                 color: '#c65f5e'
             },
-            focusContent: '',
+            mousePressed: false,
+            mouseOverObj: '',
+            mouseClickObj: '',
             outwardX: 0,
             outwardY: 0,
             content: [
@@ -155,7 +159,7 @@ export default {
             console.log(res)
             this.svgCode = res.data
         })
-        this.focusContent = this.content[0]
+
     },
     computed: {
         fontScale() {
@@ -164,6 +168,55 @@ export default {
                 scaleY: this.content[2].height / this.content[2].scaleHeight
             }
         }
+    },
+    methods: {
+        mouseover(arg) {
+            console.log(arg)
+            if (arg === 'backPg') {
+                this.mouseOverObj = this.backgroundPage
+            }
+            arg === 'content0' && (this.mouseOverObj = this.content[0])
+            arg === 'content1' && (this.mouseOverObj = this.content[1])
+            arg === 'content2' && (this.mouseOverObj = this.content[2])
+        },
+        mouseout(arg) {
+            if (arg === 'backPg') {
+                this.mouseOverObj = ''
+            }
+        },
+        mouseClick(arg) {
+            console.log(arg)
+            arg === 'backPg' && (this.mouseClickObj = this.backgroundPage)
+            arg === 'content0' && (this.mouseClickObj = this.content[0])
+            arg === 'content1' && (this.mouseClickObj = this.content[1])
+            arg === 'content2' && (this.mouseClickObj = this.content[2])
+        },
+        mousedown(e, arg) {
+            if (e.which !== 1) {
+                return
+            }
+            console.log('鼠标按下', e, arg)
+            this.mouseClick(arg)
+            // 鼠标按下位置
+            document.onmousemove = (event) => {
+                this.mousePressed = true
+                console.log('鼠标移动', event)
+                console.log('偏移量', event.pageX - e.pageX, event.pageX - e.pageX)
+                this.mouseClickObj.x = event.pageX - e.pageX + this.mouseClickObj.x
+                this.mouseClickObj.y = event.pageX - e.pageX + this.mouseClickObj.y
+            }
+            document.onmouseup = (event) => {
+                console.log('鼠标松开', event)
+                document.onmousemove = document.onmouseup = null
+                this.mousePressed = false
+            }
+        },
+        mousemove(event) {
+            if (this.mouseClickObj){
+                console.log(event)
+            }
+        }
+
     }
 }
 </script>>
@@ -174,6 +227,7 @@ export default {
     background-color: rgb(198, 95, 94);
     margin: 0 auto;
     position: relative;
+    user-select: none;
 }
 .xv {
     background-color: #fff;
@@ -518,5 +572,32 @@ export default {
 @font-face {
     font-family: "_fb_";
     src: url('https://font-public.canva.cn/_fb/0/05.woff');
+}
+.xY4chA {
+    position: absolute;
+    top: -1px;
+    bottom: -1px
+}
+
+/* [dir] .xY4chA { */
+.xY4chA {
+    padding: 1px;
+    background-size: 12px 2px,2px 12px,12px 2px,2px 12px;
+    background-repeat: repeat-x,repeat-y,repeat-x,repeat-y
+}
+
+/* [dir=ltr] .xY4chA { */
+.xY4chA {
+    background-image: linear-gradient(90deg,#00d9e1 0,#00d9e1),linear-gradient(180deg,#00d9e1 0,#00d9e1),linear-gradient(90deg,#00d9e1 0,#00d9e1),linear-gradient(180deg,#00d9e1 0,#00d9e1);
+    background-position: top,100%,bottom,0;
+    left: -1px;
+    right: -1px
+}
+
+[dir=rtl] .xY4chA {
+    background-image: linear-gradient(270deg,#00d9e1 0,#00d9e1),;
+    background-position: top,0,bottom,100%;
+    right: -1px;
+    left: -1px
 }
 </style>
